@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'vcr'
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -12,4 +16,9 @@ RSpec.configure do |config|
   config.order = :random
 
   Kernel.srand config.seed
+
+  VCR.configure do |config|
+    config.cassette_library_dir = "fixtures/vcr_cassettes"
+    config.hook_into :webmock
+  end
 end
