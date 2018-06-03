@@ -1,0 +1,5 @@
+matrix:
+  include:
+    - language: ruby
+      ruby: 2.5.1
+      script: rspec
