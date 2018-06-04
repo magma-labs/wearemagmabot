@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'vcr'
+require_relative '../config/environment'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -18,7 +19,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   VCR.configure do |config|
-    config.cassette_library_dir = "fixtures/vcr_cassettes"
+    config.cassette_library_dir = 'spec/support/fixtures/vcr_cassettes'
     config.hook_into :webmock
   end
 end
