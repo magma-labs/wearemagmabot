@@ -1,0 +1,9 @@
+matrix:
+  include:
+    - language: ruby
+      rvm:
+        - 2.5.1
+      before_install:
+        - cd crawler
+      script:
+        - bundle exec rspec
