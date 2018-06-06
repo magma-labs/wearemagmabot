@@ -5,7 +5,7 @@ require 'twitter'
 module Adapters
   class Twitter < Base
     def fetch(hashtag:, amount:)
-      client.search("#{hashtag}", result_type: :recent).take(amount).map do |tweet|
+      client.search(hashtag, result_type: :recent).take(amount).map do |tweet|
         Post.new tweet.text, build_url(tweet.url), :twitter
       end
     end
