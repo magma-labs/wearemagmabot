@@ -3,9 +3,13 @@
 require 'twitter'
 
 module Adapters
+  #
+  # Retrieves tweets with a hashtag on them.
+  #
   class Twitter < Base
     def fetch(hashtag:, amount:)
-      client.search(hashtag, result_type: :recent).take(amount).map do |tweet|
+      params = { result_type: :recent }
+      client.search("##{hashtag}", params).take(amount).map do |tweet|
         Post.new tweet.text, build_url(tweet.url), :twitter
       end
     end
