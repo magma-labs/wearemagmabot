@@ -37,6 +37,8 @@ GEM
     rack-protection (2.0.1)
       rack
     redis (4.0.1)
+    redis-namespace (1.6.0)
+      redis (>= 3.0.4)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
       rspec-expectations (~> 3.7.0)
@@ -92,6 +94,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  redis-namespace
   rspec
   sidekiq-scheduler
   twitter

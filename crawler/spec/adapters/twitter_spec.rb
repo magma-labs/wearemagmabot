@@ -4,7 +4,7 @@ RSpec.describe Adapters::Twitter do
   describe '#fetch' do
     let(:tweets) do
       VCR.use_cassette 'twitter/tweets' do
-        subject.fetch hashtag: '#wearemagma', amount: 10
+        subject.fetch hashtag: 'wearemagma', amount: 10
       end
     end
 
@@ -16,8 +16,12 @@ RSpec.describe Adapters::Twitter do
       tweets.each { |tweet| expect(tweet).to be_a Post }
     end
 
+    let(:url_regexp) { %r{^https:\/\/twitter\.com\/} }
+
     it 'each post object includes a url' do
-      tweets.each { |tweet| expect(tweet.url).to match /^https:\/\/twitter\.com\// }
+      tweets.each do |tweet|
+        expect(tweet.url).to match url_regexp
+      end
     end
   end
 end
