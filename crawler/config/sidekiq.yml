@@ -1,0 +1,3 @@
+:schedule:
+  Crawler:
+    every: <%= "#{ENV.fetch('CRAWLER_SLEEPTIME_IN_SECONDS', 60 * 30)}s" %>

@@ -2,18 +2,14 @@
 
 RSpec.describe Crawler do
   let(:foobar_posts) do
-    10.times.map { |n| Post.new("Post #{n}", "http://foo.bar/#{n}", 'foo.bar') }
+    5.times.map { |n| Post.new("Post #{n}", "http://foo.bar/#{n}", 'foo.bar') }
   end
 
-  let(:foobar_adapter) do
-    adapter = double('Foo.bar adapter')
-    allow(adapter).to receive(:fetch) { foobar_posts }
-    adapter
-  end
+  let(:foobar_adapter) { double('Foo.bar adapter') }
 
   let(:adapters) do
     [
-      foobar_adapter,
+      foobar_adapter
     ]
   end
 
@@ -21,18 +17,34 @@ RSpec.describe Crawler do
   let(:bot) { spy('Bot') }
 
   before do
+    allow(foobar_adapter).to receive(:fetch) { foobar_posts }
     allow(subject).to receive_messages(adapters: adapters, db: db, bot: bot)
   end
 
-  describe '#process' do
-    before { subject.process }
+  describe '#perform' do
+    let(:post_included) { false }
 
-    it 'fetches posts from adapters' do
-      expect(foobar_adapter).to have_received(:fetch).once()
+    before do
+      allow(db).to receive(:include?) { post_included }
+      subject.perform
     end
 
-    it 'sends new posts to bot' do
-      expect(bot).to have_received(:send_posts).once()
+    it 'fetches posts from adapters' do
+      expect(foobar_adapter).to have_received(:fetch).once
+    end
+
+    context 'when there are new posts to notify' do
+      it 'sends new posts to bot' do
+        expect(bot).to have_received(:send_posts).once
+      end
+    end
+
+    context 'when there are no new posts' do
+      let(:post_included) { true }
+
+      it 'does not send new posts to bot' do
+        expect(bot).not_to have_received(:send_posts)
+      end
     end
   end
 end

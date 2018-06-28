@@ -7,3 +7,6 @@ matrix:
         - cd crawler
       script:
         - bundle exec rspec
+
+services:
+  - redis-server

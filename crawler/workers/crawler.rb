@@ -7,17 +7,19 @@ class Crawler
 
   sidekiq_options retry: false
 
-  def process
+  def perform
     # Step 1: Get posts
     posts = adapters.flat_map do |adapter|
-      adapter.fetch(hashtag: 'wearemagma', amount: 10)
+      adapter.fetch(hashtag: 'wearemagma', amount: 5)
     end
 
     # Step 2: Store them in db and separate new ones from old ones
     posts = store_posts_and_return_new_ones(posts)
 
+    # puts "New posts fetched: #{posts.to_json}"
+
     # Step 3: Send hubot new posts
-    bot.send_posts(posts)
+    bot.send_posts(posts) if posts.count > 0
 
     # Done!
   end
@@ -26,21 +28,16 @@ class Crawler
 
   def adapters
     @adapters ||= [
-      Adapters::Twitter.new,
+      Adapters::Twitter.new
     ]
   end
 
   def store_posts_and_return_new_ones(posts)
-    new_posts = []
-    db.transaction do
-      @stored ||= db.stored_posts
+    stored = db.stored_posts
 
-      new_posts, old_posts = posts.partition do |post|
-        !@stored.include?(post) && @stored.push(post)
-      end
+    old_posts, new_posts = posts.partition { |post| stored.include?(post) }
 
-      db.stored_posts = @stored
-    end
+    db.stored_posts = stored + new_posts
     new_posts
   end
 
