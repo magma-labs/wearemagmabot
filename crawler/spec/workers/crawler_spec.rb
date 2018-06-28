@@ -13,7 +13,7 @@ RSpec.describe Crawler do
 
   let(:adapters) do
     [
-      foobar_adapter,
+      foobar_adapter
     ]
   end
 
@@ -28,11 +28,11 @@ RSpec.describe Crawler do
     before { subject.process }
 
     it 'fetches posts from adapters' do
-      expect(foobar_adapter).to have_received(:fetch).once()
+      expect(foobar_adapter).to have_received(:fetch).once
     end
 
     it 'sends new posts to bot' do
-      expect(bot).to have_received(:send_posts).once()
+      expect(bot).to have_received(:send_posts).once
     end
   end
 end

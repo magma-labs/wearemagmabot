@@ -26,7 +26,7 @@ class Crawler
 
   def adapters
     @adapters ||= [
-      Adapters::Twitter.new,
+      Adapters::Twitter.new
     ]
   end
 

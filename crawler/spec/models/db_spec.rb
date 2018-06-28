@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'redis-namespace'
 
 #
@@ -10,9 +12,9 @@ RSpec.describe DB do
     [
       { content: 'Post 1', url: 'https://ty.co/1', origin: 'ty' },
       { content: 'Post 2', url: 'https://ty.co/1', origin: 'ty' },
-      { content: 'Post 3', url: 'https://ty.co/1', origin: 'ty' },
+      { content: 'Post 3', url: 'https://ty.co/1', origin: 'ty' }
     ]
-    .map { |hash| Post.new *hash.values }
+      .map { |hash| Post.new *hash.values }
   end
 
   after do
