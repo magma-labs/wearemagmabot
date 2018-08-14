@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'byebug' unless ENV['ENVIRONMENT'] == 'production'
 
 require_relative '../models/post'
 require_relative '../models/db'
