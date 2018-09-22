@@ -7,21 +7,15 @@ class Crawler
 
   sidekiq_options retry: false
 
+  #
+  # This worker should fetch posts and send them to the bot. Each driver is
+  # responsible for fetching posts and avoid post duplication.
+  #
   def perform
-    # Step 1: Get posts
     posts = adapters.flat_map do |adapter|
       adapter.fetch(hashtag: 'wearemagma', amount: 5)
     end
-
-    # Step 2: Store them in db and separate new ones from old ones
-    posts = store_posts_and_return_new_ones(posts)
-
-    # puts "New posts fetched: #{posts.to_json}"
-
-    # Step 3: Send hubot new posts
-    bot.send_posts(posts) if posts.count > 0
-
-    # Done!
+    bot.send_posts(posts) if posts.count.positive?
   end
 
   protected
@@ -30,19 +24,6 @@ class Crawler
     @adapters ||= [
       Adapters::Twitter.new
     ]
-  end
-
-  def store_posts_and_return_new_ones(posts)
-    stored = db.stored_posts
-
-    old_posts, new_posts = posts.partition { |post| stored.include?(post) }
-
-    db.stored_posts = stored + new_posts
-    new_posts
-  end
-
-  def db
-    @db ||= DB.new
   end
 
   def bot
