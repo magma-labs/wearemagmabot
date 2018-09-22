@@ -3,6 +3,9 @@
 require 'sidekiq'
 
 class Crawler
+  POSTS_AMOUNT = 10
+  HASHTAG_TO_LOOK_FOR = ENV.fetch('CRAWLER_HASHTAG_TO_LOOK_FOR', 'wearemagma')
+
   include Sidekiq::Worker
 
   sidekiq_options retry: false
@@ -13,9 +16,9 @@ class Crawler
   #
   def perform
     posts = adapters.flat_map do |adapter|
-      adapter.fetch(hashtag: 'wearemagma', amount: 5)
+      adapter.fetch(hashtag: HASHTAG_TO_LOOK_FOR, amount: POSTS_AMOUNT)
     end
-    bot.send_posts(posts) if posts.count.positive?
+    bot.send_posts(posts) if posts.any?
   end
 
   protected
