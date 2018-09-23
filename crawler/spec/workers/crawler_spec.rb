@@ -18,14 +18,13 @@ RSpec.describe Crawler do
   end
 
   let(:bot) { spy('Bot') }
+  let(:db) { spy('Storage') }
 
   before do
-    allow(subject).to receive_messages(adapters: adapters, bot: bot)
+    allow(subject).to receive_messages(adapters: adapters, db: db, bot: bot)
   end
 
   describe '#perform' do
-    let(:post_included) { false }
-
     it 'fetches posts from adapters' do
       subject.perform
       expect(foobar_adapter).to have_received(:fetch).once

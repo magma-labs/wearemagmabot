@@ -15,29 +15,45 @@ class Crawler
   # responsible for fetching posts and avoid post duplication.
   #
   def perform
-    puts 'I have awaken. Fetching posts...'
-    posts = adapters.flat_map do |adapter|
-      adapter.fetch(hashtag: HASHTAG_TO_LOOK_FOR, amount: POSTS_AMOUNT)
-    end
+    posts = store_posts_and_return_new_ones(fetch_posts)
+    puts "#{posts.count} new post(s) fetched."
 
-    puts "#{posts.count} post(s) fetched."
     if posts.any?
-      posts.each.with_index { |post, index| puts "Post ##{index}: #{post.to_json}" }
-      puts 'Sending posts to bot...'
+      posts.each.with_index { |post, i| puts "Post ##{i}: #{post.to_json}" }
       bot.send_posts(posts)
+      puts 'Posts sent!'
     else
       puts 'Nothing to do here.'
     end
-
-    puts 'My work is done. Back to sleep.'
   end
 
   protected
+
+  def fetch_posts
+    adapters.flat_map do |adapter|
+      adapter.fetch(hashtag: HASHTAG_TO_LOOK_FOR, amount: POSTS_AMOUNT)
+    end
+  end
+
+  def store_posts_and_return_new_ones(posts)
+    # Separate new posts from ones we already sent
+    stored = db.stored_posts
+    new_posts = posts.select { |post| stored.include?(post) }
+
+    # Store new posts so we avoid post duplication.
+    db.stored_posts = stored + new_posts
+
+    new_posts
+  end
 
   def adapters
     @adapters ||= [
       Adapters::Twitter.new
     ]
+  end
+
+  def db
+    @db ||= DB.new
   end
 
   def bot
