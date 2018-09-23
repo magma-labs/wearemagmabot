@@ -3,7 +3,7 @@
 require 'sidekiq'
 
 class Crawler
-  POSTS_AMOUNT = 10
+  POSTS_AMOUNT = ENV.fetch('CRAWLER_POSTS_AMOUNT', 5)
   HASHTAG_TO_LOOK_FOR = ENV.fetch('CRAWLER_HASHTAG_TO_LOOK_FOR', 'wearemagma')
 
   include Sidekiq::Worker
