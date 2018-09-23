@@ -15,10 +15,21 @@ class Crawler
   # responsible for fetching posts and avoid post duplication.
   #
   def perform
+    puts 'I have awaken. Fetching posts...'
     posts = adapters.flat_map do |adapter|
       adapter.fetch(hashtag: HASHTAG_TO_LOOK_FOR, amount: POSTS_AMOUNT)
     end
-    bot.send_posts(posts) if posts.any?
+
+    puts "#{posts.count} post(s) fetched."
+    if posts.any?
+      posts.each.with_index { |post, index| puts "Post ##{index}: #{post.to_json}" }
+      puts 'Sending posts to bot...'
+      bot.send_posts(posts)
+    else
+      puts 'Nothing to do here.'
+    end
+
+    puts 'My work is done. Back to sleep.'
   end
 
   protected

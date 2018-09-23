@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe Crawler do
+  before do
+    # Mocking $stdout.puts so the crawler doesn't log anything during tests.
+    allow($stdout).to receive(:puts)
+  end
+
   let(:foobar_posts) do
     Array(5).map { |n| Post.new("Post #{n}", "http://foo.bar/#{n}", 'foo.bar') }
   end
 
   let(:foobar_adapter) { spy('Foo.bar adapter') }
-
   let(:adapters) do
     [
       foobar_adapter
