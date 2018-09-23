@@ -4,7 +4,7 @@ module.exports = (robot) ->
 
     # First, verify is this request comes from a trusted crawler
     unless req.headers['X-Application-Secret'] == process.env.APPLICATION_SECRET
-      console.log 'Crawler request does not include valid secret. UNAUTHORIZED.'
+      console.log 'Crawler request does not include a valid secret. UNAUTHORIZED.'
       res.status(401).send 'UNAUTHORIZED'
       return
 
@@ -17,5 +17,5 @@ module.exports = (robot) ->
       # Posts the post url so Slack can render a preview of it
       robot.messageRoom channel, post.url for post in posts
       res.send 'OK'
-      console.log 'Posts sent!'
+      console.log 'Posts sent! Waiting for new posts from crawler...'
 
