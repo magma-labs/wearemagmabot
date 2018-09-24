@@ -20,8 +20,8 @@ RSpec.configure do |config|
 
   Kernel.srand config.seed
 
-  VCR.configure do |config|
-    config.cassette_library_dir = 'spec/support/fixtures/vcr_cassettes'
-    config.hook_into :webmock
+  VCR.configure do |vcr_config|
+    vcr_config.cassette_library_dir = 'spec/support/fixtures/vcr_cassettes'
+    vcr_config.hook_into :webmock
   end
 end

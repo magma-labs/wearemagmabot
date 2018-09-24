@@ -2,12 +2,14 @@
 
 require 'redis-namespace'
 
-# Redis adapter for crawler data storage. Can be easily modified to support a different
-# DB backend.
+# Redis adapter for crawler data storage. Can be easily modified to support a
+# different DB backend.
 class DB
   def stored_posts
     posts = JSON.parse(redis.get('posts') || '[]')
-    posts.map { |hash| Post.new hash['content'], hash['url'], hash['origin'].to_sym }
+    posts.map do |hash|
+      Post.new hash['content'], hash['url'], hash['origin'].to_sym
+    end
   end
 
   def stored_posts=(posts)

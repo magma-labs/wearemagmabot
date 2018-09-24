@@ -17,7 +17,7 @@ class Bot
   def bot_headers
     {
       'Content-Type': 'application/json',
-      'X-Application-Secret': ENV['APPLICATION_SECRET']
+      'X-Application-Secret': ENV.fetch('APPLICATION_SECRET')
     }
   end
 end

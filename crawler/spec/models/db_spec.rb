@@ -2,10 +2,13 @@
 
 require 'redis-namespace'
 
-#
-# NOTE: This spec needs a running redis instance to work
-#
 RSpec.describe DB do
+  before do
+    redis.ping
+  rescue Redis::CannotConnectError
+    raise 'This test needs a Redis running instance to work.'
+  end
+
   let(:redis) { Redis::Namespace.new ns: 'test', redis: Redis.new }
 
   let(:posts) do
@@ -14,7 +17,7 @@ RSpec.describe DB do
       { content: 'Post 2', url: 'https://ty.co/1', origin: 'ty' },
       { content: 'Post 3', url: 'https://ty.co/1', origin: 'ty' }
     ]
-      .map { |hash| Post.new *hash.values }
+      .map { |hash| Post.new(*hash.values) }
   end
 
   after do
